@@ -1,0 +1,10 @@
+__pycache__/
+*.egg-info/
+.venv/
+build/
+dist/
+extension/node_modules/
+extension/out/
+extension/media/
+extension/*.vsix
+examples/**/*.fragment.html
