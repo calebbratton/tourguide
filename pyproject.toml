@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tourguide"
+version = "0.1.0"
+description = "Adaptive, guided walkthroughs of code repositories, written by a Claude agent."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+api = ["anthropic>=2.3"]
+dev = ["pytest>=8", "anthropic>=2.3"]
+
+[project.scripts]
+tourguide = "tourguide.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tourguide*"]
+
+[tool.setuptools.package-data]
+"tourguide.viewer" = ["template.html"]

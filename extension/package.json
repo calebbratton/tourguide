@@ -1,0 +1,135 @@
+{
+  "name": "tourguide",
+  "displayName": "Tour Guide",
+  "description": "Adaptive guided tours of a codebase: step-by-step explanations, highlighted code and docs, tuned to what you already know.",
+  "version": "0.1.0",
+  "publisher": "calebbratton",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Education",
+    "Other"
+  ],
+  "keywords": [
+    "tour",
+    "walkthrough",
+    "onboarding",
+    "learning",
+    "claude"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "workspaceContains:.tours/*.json"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "tourguide.openTour",
+        "title": "Open Tour\u2026",
+        "category": "Tour Guide"
+      },
+      {
+        "command": "tourguide.generateTour",
+        "title": "Generate a Tour of This Workspace\u2026",
+        "category": "Tour Guide"
+      },
+      {
+        "command": "tourguide.next",
+        "title": "Next Step",
+        "category": "Tour Guide"
+      },
+      {
+        "command": "tourguide.previous",
+        "title": "Previous Step",
+        "category": "Tour Guide"
+      },
+      {
+        "command": "tourguide.askAboutSelection",
+        "title": "Ask the Tour About Selected Lines",
+        "category": "Tour Guide"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "tourguide.next",
+        "key": "ctrl+alt+]",
+        "mac": "cmd+alt+]",
+        "when": "tourguide.active"
+      },
+      {
+        "command": "tourguide.previous",
+        "key": "ctrl+alt+[",
+        "mac": "cmd+alt+[",
+        "when": "tourguide.active"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "tourguide.askAboutSelection",
+          "when": "tourguide.active && editorHasSelection",
+          "group": "navigation@90"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Tour Guide",
+      "properties": {
+        "tourguide.backend": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "claude-code",
+            "vscode-lm",
+            "none"
+          ],
+          "enumDescriptions": [
+            "Use Claude Code if it is installed, otherwise a chat model available in the editor, otherwise none.",
+            "Use the Claude Code CLI (`claude -p`). Usage counts against your Claude plan.",
+            "Use a chat model the editor provides to extensions (for example GitHub Copilot). Live answers only.",
+            "No AI: play prepared tours and match your notes by keyword."
+          ],
+          "default": "auto",
+          "description": "Which AI answers live questions and generates tours."
+        },
+        "tourguide.claudePath": {
+          "type": "string",
+          "default": "claude",
+          "description": "Path to the Claude Code CLI."
+        },
+        "tourguide.model": {
+          "type": "string",
+          "default": "",
+          "description": "Model for generating tours with Claude Code, such as `sonnet` or `opus`. Empty uses your Claude Code default."
+        },
+        "tourguide.steps": {
+          "type": "number",
+          "default": 16,
+          "description": "Target number of steps when generating a tour."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "assets": "node scripts/assets.mjs",
+    "compile": "npm run assets && tsc -p .",
+    "test": "npm run compile && node --test test/*.test.js",
+    "package": "npm run compile && vsce package --no-dependencies --skip-license"
+  },
+  "devDependencies": {
+    "@highlightjs/cdn-assets": "11.9.0",
+    "@types/node": "20.14.10",
+    "@types/vscode": "1.90.0",
+    "@vscode/vsce": "2.31.1",
+    "dompurify": "3.1.6",
+    "marked": "12.0.2",
+    "typescript": "5.5.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calebbratton/tourguide"
+  },
+  "homepage": "https://github.com/calebbratton/tourguide#readme"
+}

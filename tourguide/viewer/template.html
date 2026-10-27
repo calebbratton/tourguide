@@ -1,0 +1,1146 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a study desk. A slim route rail, the lesson you are reading, and the open source file with highlighter marks. */
+:root {
+  --paper: #f4f6f8;
+  --sheet: #ffffff;
+  --ink: #17212b;
+  --muted: #5a6776;
+  --rule: #d9dfe6;
+  --pine: #0b6b62;
+  --pine-soft: #e2f1ee;
+  --mark: rgba(255, 221, 51, 0.38);
+  --mark-edge: #e0b400;
+  --code-bg: #fbfcfd;
+  --code-ink: #1f2933;
+  --gutter: #9aa5b1;
+  --warn: #9a5b00;
+  --tok-kw: #7a3e9d;
+  --tok-str: #0f6e3a;
+  --tok-com: #7b8794;
+  --tok-num: #b0440f;
+  --tok-fn: #1c5aa6;
+  --tok-type: #8a5a00;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10161c; --sheet: #161e26; --ink: #e6ebf0; --muted: #98a6b5; --rule: #2a3542;
+    --pine: #4fc2b2; --pine-soft: #17302d; --mark: rgba(255, 214, 10, 0.17); --mark-edge: #d9b200;
+    --code-bg: #0d1318; --code-ink: #d9e1e8; --gutter: #5b6877; --warn: #f0b45a;
+    --tok-kw: #c79bf2; --tok-str: #8fd19e; --tok-com: #6f7d8c; --tok-num: #f2a46b; --tok-fn: #7cb8ff; --tok-type: #e8c66a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10161c; --sheet: #161e26; --ink: #e6ebf0; --muted: #98a6b5; --rule: #2a3542;
+  --pine: #4fc2b2; --pine-soft: #17302d; --mark: rgba(255, 214, 10, 0.17); --mark-edge: #d9b200;
+  --code-bg: #0d1318; --code-ink: #d9e1e8; --gutter: #5b6877; --warn: #f0b45a;
+  --tok-kw: #c79bf2; --tok-str: #8fd19e; --tok-com: #6f7d8c; --tok-num: #f2a46b; --tok-fn: #7cb8ff; --tok-type: #e8c66a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-display); font-size: 15px; line-height: 1.45;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }
+a { color: var(--pine); }
+
+.app { height: 100%; display: grid; grid-template-rows: auto 1fr; }
+
+/* ---------- header ---------- */
+.top {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-bottom: 1px solid var(--rule); background: var(--sheet);
+}
+.brand { display: flex; flex-direction: column; min-width: 0; flex: 1 1 260px; }
+.brand .repo { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .02em; }
+.brand h1 { margin: 0; font-size: 18px; font-weight: 700; text-wrap: balance; }
+.meter { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.meter .bar { width: 120px; height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; }
+.meter .bar i { display: block; height: 100%; background: var(--pine); width: 0; transition: width .3s; }
+.tune-btn {
+  display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--rule); background: var(--paper);
+  border-radius: 999px; padding: 6px 12px; font-size: 13px;
+}
+.tune-btn b { font-weight: 600; }
+.tune-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pine); }
+.step-select { display: none; max-width: 100%; border: 1px solid var(--rule); border-radius: 8px; padding: 6px 8px; background: var(--paper); }
+
+/* ---------- main grid ---------- */
+.desk { display: grid; grid-template-columns: 230px minmax(340px, 470px) minmax(0, 1fr); min-height: 0; }
+.rail, .lesson, .source { min-height: 0; min-width: 0; }
+
+.rail { border-right: 1px solid var(--rule); overflow-y: auto; padding: 14px 0 24px; background: var(--paper); }
+.rail h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 16px 8px; font-weight: 600; }
+.rail ol { list-style: none; margin: 0; padding: 0; }
+.rail li button {
+  width: 100%; text-align: left; border: 0; background: none; padding: 7px 16px 7px 14px;
+  display: grid; grid-template-columns: 22px 1fr; gap: 6px; align-items: baseline; border-left: 3px solid transparent;
+}
+.rail li button:hover { background: var(--sheet); }
+.rail li .n { font-family: var(--font-mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rail li .t { font-size: 13.5px; line-height: 1.3; }
+.rail li .d { grid-column: 2; font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+.rail li.current button { border-left-color: var(--pine); background: var(--sheet); }
+.rail li.current .t { font-weight: 600; }
+.rail li.visited .n::after { content: " ✓"; color: var(--pine); }
+.rail li.skipped .t { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule); }
+
+/* ---------- lesson ---------- */
+.lesson { overflow-y: auto; background: var(--sheet); border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
+.lesson-body { padding: 22px 26px 28px; display: flex; flex-direction: column; gap: 18px; flex: 1; }
+.eyebrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+.eyebrow .topic { text-transform: uppercase; letter-spacing: .07em; font-weight: 600; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11.5px;
+  padding: 2px 8px; border-radius: 999px; background: var(--pine-soft); color: var(--pine); border: 0;
+}
+.chip.warn { background: transparent; color: var(--warn); border: 1px dashed currentColor; }
+.lesson h2.title { font-size: 26px; line-height: 1.15; margin: 0; font-weight: 700; text-wrap: balance; }
+.file-link { align-self: flex-start; font-family: var(--font-mono); font-size: 12.5px; background: none; border: 0; padding: 0; color: var(--pine); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; text-align: left; }
+
+.prose { font-family: var(--font-body); font-size: 16.5px; line-height: 1.62; max-width: 62ch; }
+.prose > :first-child { margin-top: 0; }
+.prose > :last-child { margin-bottom: 0; }
+.prose p { margin: 0 0 .85em; }
+.prose h3, .prose h4 { font-family: var(--font-display); font-size: 16px; margin: 1.2em 0 .4em; }
+.prose code { font-family: var(--font-mono); font-size: .82em; background: var(--paper); border: 1px solid var(--rule); padding: 1px 5px; border-radius: 5px; }
+.prose pre { background: var(--code-bg); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px; overflow-x: auto; font-size: 13px; }
+.prose pre code { border: 0; padding: 0; background: none; }
+.prose ul, .prose ol { padding-left: 1.3em; margin: 0 0 .85em; }
+.prose li { margin: .2em 0; }
+.prose a.peek { text-decoration-style: dotted; }
+.prose blockquote { margin: 0 0 .85em; padding-left: 12px; border-left: 3px solid var(--rule); color: var(--muted); }
+
+.label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; margin: 0 0 8px; }
+.marks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.marks button {
+  width: 100%; text-align: left; border: 0; background: none; padding: 6px 8px; border-radius: 6px;
+  display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline;
+}
+.marks button:hover { background: var(--paper); }
+.marks .ln { font-family: var(--font-mono); font-size: 12px; background: var(--mark); box-shadow: inset 2px 0 0 var(--mark-edge); padding: 1px 6px; border-radius: 3px; font-variant-numeric: tabular-nums; }
+
+.panel { border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.panel.written { border-color: var(--pine); }
+.check-q { font-family: var(--font-body); font-size: 16px; margin: 0; }
+.check-a { font-family: var(--font-body); font-size: 15.5px; margin: 0; padding: 10px 12px; background: var(--paper); border-radius: 8px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn {
+  border: 1px solid var(--rule); background: var(--sheet); border-radius: 8px; padding: 7px 12px; font-size: 13.5px;
+}
+.btn:hover { border-color: var(--pine); }
+.btn.primary { background: var(--pine); border-color: var(--pine); color: var(--sheet); font-weight: 600; }
+.btn.on { background: var(--pine-soft); border-color: var(--pine); color: var(--pine); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.feedback .btn { border-radius: 999px; }
+.hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+.links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.links a { font-size: 14px; overflow-wrap: anywhere; }
+.links .host { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-left: 6px; }
+
+.ask textarea, .tune textarea {
+  width: 100%; min-height: 70px; resize: vertical; border: 1px solid var(--rule); border-radius: 8px;
+  padding: 9px 11px; background: var(--paper); font-family: var(--font-body); font-size: 15px; line-height: 1.45;
+}
+.answer { font-family: var(--font-body); font-size: 15.5px; line-height: 1.55; }
+.answer .q { font-family: var(--font-display); font-size: 13px; color: var(--muted); margin: 0 0 4px; }
+
+.nav {
+  position: sticky; bottom: 0; display: flex; justify-content: space-between; gap: 10px; align-items: center;
+  padding: 12px 26px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--rule); background: var(--sheet);
+}
+.nav .kbd { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--paper); padding: 9px 14px; border-radius: 8px; font-size: 13.5px;
+  max-width: min(92vw, 520px); box-shadow: 0 6px 24px rgba(0,0,0,.18); z-index: 20;
+}
+
+/* ---------- tune (profile) ---------- */
+.tune { display: flex; flex-direction: column; gap: 14px; }
+.topics { display: flex; flex-direction: column; gap: 10px; }
+.topic-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; }
+.topic-row .nm { font-weight: 600; font-size: 14px; }
+.topic-row .ds { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted); margin-top: -4px; }
+.topic-row .why { grid-column: 1 / -1; font-size: 12px; color: var(--pine); margin-top: -4px; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: var(--sheet); padding: 5px 9px; font-size: 12.5px; border-left: 1px solid var(--rule); }
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--pine); color: var(--sheet); font-weight: 600; }
+.tune-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100%); background: var(--sheet);
+  border-left: 1px solid var(--rule); box-shadow: -10px 0 40px rgba(0,0,0,.12); z-index: 30; overflow-y: auto;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 20px;
+}
+.tune-drawer .close { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); }
+.scrim { position: fixed; inset: 0; background: rgba(10, 15, 20, .35); z-index: 25; }
+
+/* ---------- source ---------- */
+.source { display: flex; flex-direction: column; background: var(--code-bg); }
+.source-head {
+  display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-bottom: 1px solid var(--rule); background: var(--sheet);
+}
+.source-head .path { font-family: var(--font-mono); font-size: 13px; font-weight: 600; overflow-wrap: anywhere; min-width: 0; }
+.source-head .meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.peekbar { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 7px 16px; background: var(--mark); font-size: 13px; }
+.code-scroll { flex: 1; overflow: auto; min-height: 0; }
+table.code { border-collapse: collapse; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: var(--code-ink); min-width: 100%; }
+table.code td { padding: 0; vertical-align: top; }
+table.code td.no {
+  user-select: none; text-align: right; color: var(--gutter); padding: 0 12px 0 14px; position: sticky; left: 0;
+  background: var(--code-bg); font-variant-numeric: tabular-nums; min-width: 48px; width: 1%;
+}
+table.code td.src { white-space: pre; padding-right: 24px; width: 100%; }
+table.code tr.hl td.src { background: var(--mark); }
+table.code tr.hl td.no { color: var(--ink); box-shadow: inset -3px 0 0 var(--mark-edge); }
+table.code tr.flash td.src { animation: flash 1.1s ease-out; }
+table.code td.no { cursor: pointer; }
+table.code td.no:hover { color: var(--pine); }
+table.code tr.sel td.src { box-shadow: inset 0 1px 0 var(--pine), inset 0 -1px 0 var(--pine); background: var(--pine-soft); }
+table.code tr.sel td.no { color: var(--pine); font-weight: 600; }
+.selbar { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 7px 16px; background: var(--pine-soft); color: var(--pine); font-size: 13px; }
+.sel-chip { display: inline-flex; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--pine); }
+.sel-chip button { border: 0; background: none; color: inherit; padding: 0 2px; font-size: 14px; }
+@keyframes flash { from { background: var(--mark-edge); } }
+.tag-row td.src { white-space: normal; padding: 8px 0 2px; }
+.tag { display: inline-block; font-family: var(--font-display); font-size: 12px; font-weight: 600; background: var(--mark-edge); color: #1d1600; padding: 1px 8px; border-radius: 4px 4px 4px 0; }
+
+.map { padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; overflow-y: auto; }
+.map h3 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.map-topic { display: flex; flex-direction: column; gap: 6px; }
+.map-topic header { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.map-topic header b { font-size: 15px; }
+.map-topic ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.map-topic li { display: grid; grid-template-columns: 1fr auto; gap: 10px; font-size: 13.5px; padding: 3px 0; border-bottom: 1px dashed var(--rule); }
+.map-topic li .f { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); overflow-wrap: anywhere; text-align: right; }
+.map-topic.skip { opacity: .55; }
+.cov { display: flex; flex-direction: column; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+.cov-bars { display: grid; grid-template-columns: auto 1fr auto; gap: 6px 12px; align-items: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+.cov-bar { height: 8px; border-radius: 4px; background: var(--rule); overflow: hidden; position: relative; }
+.cov-bar i { position: absolute; inset: 0 auto 0 0; background: var(--pine); opacity: .35; }
+.cov-bar b { position: absolute; inset: 0 auto 0 0; background: var(--pine); }
+.gaps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.gaps li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; font-size: 13px; padding: 3px 0; border-bottom: 1px dashed var(--rule); }
+.gaps code { font-family: var(--font-mono); font-size: 12px; overflow-wrap: anywhere; }
+.gaps .n { color: var(--muted); font-family: var(--font-mono); font-size: 11.5px; }
+
+/* token colors */
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in.hljs-keyword { color: var(--tok-kw); }
+.hljs-string, .hljs-regexp, .hljs-addition, .hljs-symbol { color: var(--tok-str); }
+.hljs-comment, .hljs-quote, .hljs-meta { color: var(--tok-com); font-style: italic; }
+.hljs-number, .hljs-literal { color: var(--tok-num); }
+.hljs-title, .hljs-title.function_, .hljs-section { color: var(--tok-fn); }
+.hljs-type, .hljs-title.class_, .hljs-built_in, .hljs-attr, .hljs-attribute { color: var(--tok-type); }
+.hljs-params, .hljs-variable, .hljs-property { color: var(--code-ink); }
+.hljs-deletion { color: var(--tok-num); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+  .desk { grid-template-columns: minmax(320px, 440px) minmax(0, 1fr); }
+  .rail { display: none; }
+  .step-select { display: block; }
+}
+@media (max-width: 760px) {
+  html, body { height: auto; }
+  .app { height: auto; display: block; }
+  .desk { display: flex; flex-direction: column; }
+  .lesson { border-right: 0; overflow: visible; }
+  .lesson-body { padding: 18px max(16px, env(safe-area-inset-left, 0px)) 22px; }
+  .nav { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); z-index: 5; }
+  .source { border-top: 1px solid var(--rule); }
+  .code-scroll { max-height: 70vh; }
+  .lesson h2.title { font-size: 22px; }
+  .meter .bar { width: 70px; }
+  .step-select { flex: 1 1 100%; }
+}
+.nav .kbd { white-space: nowrap; }
+@media (max-width: 760px) { .nav .kbd { display: none; } }
+
+/* ---------- inside VS Code / Cursor: the real editor shows the code ---------- */
+:root.in-editor {
+  --paper: var(--vscode-sideBar-background, var(--vscode-editor-background));
+  --sheet: var(--vscode-editor-background);
+  --ink: var(--vscode-foreground);
+  --muted: var(--vscode-descriptionForeground);
+  --rule: var(--vscode-panel-border, var(--vscode-widget-border, rgba(128,128,128,.35)));
+  --pine: var(--vscode-textLink-foreground);
+  --pine-soft: var(--vscode-editor-inactiveSelectionBackground);
+  --code-bg: var(--vscode-textCodeBlock-background, var(--vscode-editor-background));
+  --font-display: var(--vscode-font-family);
+  --font-body: var(--vscode-font-family);
+  --font-mono: var(--vscode-editor-font-family);
+}
+:root.in-editor .source, :root.in-editor .rail { display: none; }
+:root.in-editor, :root.in-editor body { height: 100%; }
+:root.in-editor .app { height: 100%; display: grid; }
+:root.in-editor .lesson { overflow-y: auto; }
+:root.in-editor .desk { display: flex; flex-direction: column; }
+:root.in-editor .lesson { border-right: 0; flex: 1; }
+:root.in-editor .step-select { display: block; flex: 1 1 100%; }
+:root.in-editor .prose { font-size: 14.5px; }
+:root.in-editor .btn.primary { color: var(--vscode-button-foreground); background: var(--vscode-button-background); border-color: var(--vscode-button-background); }
+:root.in-editor .seg button[aria-pressed="true"] { color: var(--vscode-button-foreground); background: var(--vscode-button-background); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span class="repo" id="repoName"></span>
+      <h1 id="tourTitle"></h1>
+    </div>
+    <div class="meter" aria-live="polite"><span id="meterText"></span><span class="bar"><i id="meterBar"></i></span></div>
+    <select class="step-select" id="stepSelect" aria-label="Jump to step"></select>
+    <button class="tune-btn" id="tuneBtn" type="button" aria-haspopup="dialog"><span class="dot"></span><span id="tuneSummary">Tuned for you</span></button>
+  </header>
+  <main class="desk">
+    <nav class="rail" aria-label="Tour steps">
+      <h2>Route</h2>
+      <ol id="rail"></ol>
+    </nav>
+    <section class="lesson" aria-live="polite">
+      <div class="lesson-body" id="lesson"></div>
+      <div class="nav">
+        <button class="btn" id="prevBtn" type="button">← Back</button>
+        <span class="kbd">← → to move</span>
+        <button class="btn primary" id="nextBtn" type="button">Next →</button>
+      </div>
+    </section>
+    <section class="source" aria-label="Source code">
+      <div class="source-head">
+        <span class="path" id="srcPath"></span>
+        <span class="meta" id="srcMeta"></span>
+      </div>
+      <div class="peekbar" id="peekBar" hidden><span id="peekText"></span><button class="btn" id="peekBack" type="button">Back to this step's code</button></div>
+      <div class="selbar" id="selBar" hidden><span id="selText"></span><span class="row"><button class="btn" id="selAsk" type="button">Ask about these lines</button><button class="btn" id="selClear" type="button">Clear</button></span></div>
+      <div class="code-scroll" id="codeScroll"></div>
+    </section>
+  </main>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="tune-drawer" id="tuneDrawer" role="dialog" aria-modal="true" aria-labelledby="tuneTitle" hidden>
+  <button class="btn close" id="tuneClose" type="button">Close</button>
+  <div id="tuneDrawerBody"></div>
+</aside>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script type="application/json" id="walkthrough-data">__DATA__</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+(() => {
+"use strict";
+
+// ---------------------------------------------------------------- data
+const W = JSON.parse(document.getElementById("walkthrough-data").textContent);
+// Inside the VS Code / Cursor extension the page talks to the extension instead of drawing code itself.
+const HOST = typeof acquireVsCodeApi === "function" ? acquireVsCodeApi() : null;
+if (HOST) document.documentElement.classList.add("in-editor");
+const post = msg => { if (HOST) HOST.postMessage(msg); };
+const DEPTHS = ["skip", "brief", "standard", "deep"];
+const DEPTH_LABEL = { skip: "Skip", brief: "Brief", standard: "Standard", deep: "Deep" };
+const topicsById = Object.fromEntries(W.topics.map(t => [t.id, t]));
+const steps = W.steps;
+const STORE_KEY = "tourguide:" + (W.repo && W.repo.name || "") + ":" + W.title;
+
+const $ = id => document.getElementById(id);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") n.className = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : String(kid));
+  return n;
+};
+
+// ---------------------------------------------------------------- learner profile
+// baseline: default depth for topics the learner has not set.
+// topics[id]: {depth, why, source: "you" | "adapted"}
+// signals[id]: running record of feedback, used to gauge competency.
+function freshProfile() {
+  return { baseline: "standard", note: "", topics: {}, signals: {}, visited: [], current: -1 };
+}
+function load() {
+  if (HOST) { const st = HOST.getState(); if (st && st.profile) return Object.assign(freshProfile(), st.profile); }
+  try { const raw = localStorage.getItem(STORE_KEY); if (raw) return Object.assign(freshProfile(), JSON.parse(raw)); } catch (e) {}
+  return freshProfile();
+}
+let P = load();
+function save() {
+  if (HOST) { HOST.setState({ profile: P }); post({ type: "profile", profile: P }); return; }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(P)); } catch (e) {}
+}
+
+function depthOf(topicId) { return (P.topics[topicId] && P.topics[topicId].depth) || P.baseline; }
+function whyOf(topicId) {
+  const t = P.topics[topicId];
+  if (t && t.why) return t.why;
+  return "Your default depth is " + DEPTH_LABEL[P.baseline].toLowerCase() + ".";
+}
+function setTopic(topicId, depth, why, source) {
+  P.topics[topicId] = { depth, why, source };
+  save();
+}
+function shift(topicId, delta, why) {
+  const cur = DEPTHS.indexOf(depthOf(topicId));
+  const next = Math.min(3, Math.max(1, cur + delta));
+  if (next === cur) return false;
+  setTopic(topicId, DEPTHS[next], why, "adapted");
+  return true;
+}
+function signal(topicId, kind) {
+  const s = P.signals[topicId] || (P.signals[topicId] = []);
+  s.push(kind);
+  if (s.length > 6) s.shift();
+  save();
+  return s;
+}
+
+// ---------------------------------------------------------------- live Claude (optional)
+// In a claude.ai artifact the page can ask Claude through the `sample` capability (on the viewer's account).
+// When served by `tourguide serve`, it posts to the local endpoint instead (using the developer's API key).
+let live = null;   // async (prompt, {onText, quick, signal}) => text
+let liveKind = "";
+const hostCalls = {};
+let hostSeq = 0;
+function setupHost() {
+  window.addEventListener("message", e => {
+    const m = e.data || {};
+    if (m.type === "init") {
+      if (m.profile && !(HOST.getState() || {}).profile) { P = Object.assign(freshProfile(), m.profile); index = Math.min(P.current ?? -1, steps.length - 1); }
+      if (m.live) {
+        liveKind = m.backend || "editor";
+        live = (prompt, opts = {}) => new Promise((resolve, reject) => {
+          const id = ++hostSeq;
+          hostCalls[id] = { resolve, reject, onText: opts.onText };
+          if (opts.signal) opts.signal.addEventListener("abort", () => { post({ type: "cancel", id }); delete hostCalls[id]; reject({ code: "cancelled" }); });
+          post({ type: "ask", id, prompt, quick: !!opts.quick });
+        });
+      } else { live = null; }
+      render();
+    } else if (m.type === "chunk" && hostCalls[m.id]) {
+      const c = hostCalls[m.id]; if (c.onText) c.onText({ text: m.text });
+    } else if (m.type === "done" && hostCalls[m.id]) {
+      hostCalls[m.id].resolve(m.text); delete hostCalls[m.id];
+    } else if (m.type === "error" && hostCalls[m.id]) {
+      hostCalls[m.id].reject({ code: m.code || "upstream_error", message: m.message, text: m.text }); delete hostCalls[m.id];
+    } else if (m.type === "selection") {
+      selection = m.path && m.start ? { path: m.path, start: m.start, end: m.end || m.start, text: m.text } : null;
+      const c = document.querySelector(".ask .sel-slot"); if (c) c.replaceChildren(selChip());
+    } else if (m.type === "goto") {
+      if (m.dir === 1) next(); else if (m.dir === -1) prev(); else if (typeof m.index === "number") go(m.index, true);
+    } else if (m.type === "focusAsk") {
+      const t = document.querySelector(".ask textarea");
+      if (t) { t.scrollIntoView({ behavior: "smooth", block: "center" }); t.focus(); }
+      else toast(index < 0 ? "Start the tour first, then ask about the code." : "Live answers aren't available right now.");
+    } else if (m.type === "files") {
+      Object.assign(W.files, m.files || {}); render();
+    }
+  });
+  post({ type: "ready" });
+}
+async function setupLive() {
+  if (HOST) { setupHost(); return; }
+  if (W.live && W.live.endpoint) {
+    liveKind = "local";
+    live = async (prompt, opts = {}) => {
+      const res = await fetch(W.live.endpoint, {
+        method: "POST", headers: { "content-type": "application/json" }, signal: opts.signal,
+        body: JSON.stringify({ prompt, quick: !!opts.quick }),
+      });
+      if (!res.ok || !res.body) throw { code: "upstream_error", message: await res.text() };
+      const reader = res.body.getReader(); const dec = new TextDecoder(); let text = "";
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        text += dec.decode(value, { stream: true });
+        if (opts.onText) opts.onText({ text });
+      }
+      return text;
+    };
+    render();
+    return;
+  }
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const sample = await window.claude.use("sample");
+    if (!sample) return;
+    liveKind = "claude";
+    live = async (prompt, opts = {}) => {
+      const r = await sample(prompt, {
+        onText: opts.onText, signal: opts.signal, modelTier: opts.quick ? "quick" : "default", cache: opts.cache ?? true,
+      });
+      return r.text;
+    };
+    render();
+  } catch (e) { /* stay offline */ }
+}
+function liveError(e) {
+  const code = e && e.code;
+  if (code === "not_granted" || code === "sampling_disabled" || code === "not_declared" || code === "capability_disabled") {
+    live = null; render();
+    return "Live answers are off for this page, so the tour is using its prepared explanations only.";
+  }
+  if (code === "rate_limited") return "Too many requests right now. Try again in a minute.";
+  if (code === "cancelled") return "";
+  return "That request didn't go through. Try again.";
+}
+
+// ---------------------------------------------------------------- reading the learner's own words
+const SKIP_WORDS = /\b(skip|ignore|don'?t care|not interested|leave out)\b/i;
+const LESS_WORDS = /\b(don'?t need|dont need|do not need|no need|already know|familiar with|know (?:it|that|this)|basic|basics|obvious|comfortable with|less|brief|quick(?:ly)?|skim)\b/i;
+const MORE_WORDS = /\b(detail|detailed|deep|depth|in-depth|thorough|go into|dig into|focus|explain|new to|unfamiliar|don'?t know|never used|learn|more about|curious|care about|interested in|most)\b/i;
+
+function heuristicRead(note) {
+  const changes = {}; let baseline = null;
+  if (/\b(senior|expert|staff|principal|\d+\s*\+?\s*years)\b/i.test(note)) baseline = "brief";
+  if (/\b(beginner|junior|new to (?:programming|coding)|just learning|student)\b/i.test(note)) baseline = "deep";
+  const clauses = note.split(/(?:[.;!?\n]|,|\bbut\b|\bhowever\b|\bwhile\b|\balthough\b)+/i).map(s => s.trim()).filter(Boolean);
+  for (const clause of clauses) {
+    const lc = clause.toLowerCase();
+    const hit = W.topics.filter(t => [t.label, ...(t.keywords || [])].some(k => {
+      const kk = String(k).toLowerCase().trim();
+      return kk.length > 1 && new RegExp("\\b" + kk.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b").test(lc);
+    }));
+    if (!hit.length) continue;
+    let depth = null;
+    if (SKIP_WORDS.test(clause)) depth = "skip";
+    else if (LESS_WORDS.test(clause) && !/\bnew to\b/i.test(clause)) depth = "brief";
+    else if (MORE_WORDS.test(clause)) depth = "deep";
+    if (!depth) continue;
+    for (const t of hit) changes[t.id] = { depth, why: "You said: “" + clause + "”" };
+  }
+  return { baseline, changes };
+}
+
+async function readNote(note) {
+  if (live) {
+    const prompt = [
+      "A developer is about to take a guided tour of a code repository. Read their note and decide how much",
+      "detail they want for each topic of the tour. Depth options: skip (leave the topic out), brief (1-3 sentences),",
+      "standard (clear explanation), deep (internals and trade-offs).",
+      "",
+      "Topics:",
+      ...W.topics.map(t => `- ${t.id}: ${t.label}. ${t.description} (keywords: ${(t.keywords || []).join(", ")})`),
+      "",
+      "Current default depth: " + P.baseline,
+      "Their note: \"\"\"" + note + "\"\"\"",
+      "",
+      "Reply with only JSON in this shape:",
+      '{"baseline": "brief"|"standard"|"deep"|null, "changes": {"<topic id>": {"depth": "skip"|"brief"|"standard"|"deep", "why": "<short reason quoting their words>"}}}',
+      "Set baseline only if the note says something about their overall experience. Include only topics the note actually affects.",
+      "Treat 'I don't need X explained' as brief, and 'skip X' or 'not interested in X' as skip.",
+    ].join("\n");
+    try {
+      const text = await live(prompt, { quick: true });
+      const m = text.match(/\{[\s\S]*\}/);
+      const parsed = JSON.parse(m ? m[0] : text);
+      const out = { baseline: DEPTHS.includes(parsed.baseline) && parsed.baseline !== "skip" ? parsed.baseline : null, changes: {} };
+      for (const [id, c] of Object.entries(parsed.changes || {})) {
+        if (topicsById[id] && c && DEPTHS.includes(c.depth)) out.changes[id] = { depth: c.depth, why: String(c.why || "From your note.") };
+      }
+      out.by = "Claude";
+      return out;
+    } catch (e) {
+      const msg = liveError(e);
+      if (msg) toast(msg);
+    }
+  }
+  const out = heuristicRead(note); out.by = "keywords";
+  return out;
+}
+
+async function applyNote(note, statusEl) {
+  note = note.trim();
+  if (!note) return;
+  if (statusEl) statusEl.textContent = live ? "Reading your note…" : "Reading your note…";
+  const r = await readNote(note);
+  P.note = P.note ? P.note + "\n" + note : note;
+  const parts = [];
+  if (r.baseline && r.baseline !== P.baseline) { P.baseline = r.baseline; parts.push("default depth → " + DEPTH_LABEL[r.baseline]); }
+  for (const [id, c] of Object.entries(r.changes)) {
+    setTopic(id, c.depth, c.why, "you");
+    parts.push(topicsById[id].label + " → " + DEPTH_LABEL[c.depth]);
+  }
+  save();
+  const msg = parts.length ? "Adjusted: " + parts.join(" · ") : "I couldn't match that to a topic. Try naming one, or set the depths below.";
+  if (statusEl) statusEl.textContent = msg + (parts.length && r.by === "keywords" ? " (matched by keywords)" : "");
+  toast(msg);
+  render();
+}
+
+// ---------------------------------------------------------------- markdown & code helpers
+function md(text) {
+  const html = window.marked ? marked.parse(text || "", { gfm: true, breaks: false }) : escapeHtml(text || "").replace(/\n/g, "<br>");
+  const clean = window.DOMPurify ? DOMPurify.sanitize(html) : escapeHtml(text || "");
+  const wrap = el("div", { class: "prose" }); wrap.innerHTML = clean;
+  for (const a of wrap.querySelectorAll("a[href]")) {
+    const href = a.getAttribute("href");
+    const m = href.match(/^(?!https?:|mailto:|#)([^#\s]+)(?:#L(\d+)(?:-L(\d+))?)?$/);
+    if (m && W.files[m[1]] != null) {
+      a.classList.add("peek"); a.removeAttribute("href"); a.setAttribute("role", "button"); a.tabIndex = 0;
+      a.title = "Show " + m[1] + " in the code panel";
+      const go = () => peek(m[1], m[2] ? +m[2] : null, m[3] ? +m[3] : (m[2] ? +m[2] : null));
+      a.addEventListener("click", go);
+      a.addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+    } else if (/^https?:/.test(href)) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+  }
+  return wrap;
+}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+const LANG_BY_EXT = { py: "python", js: "javascript", mjs: "javascript", cjs: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
+  json: "json", md: "markdown", yml: "yaml", yaml: "yaml", toml: "ini", ini: "ini", sh: "bash", bash: "bash", go: "go", rs: "rust",
+  rb: "ruby", java: "java", kt: "kotlin", c: "c", h: "c", cpp: "cpp", cc: "cpp", hpp: "cpp", cs: "csharp", php: "php", sql: "sql",
+  html: "xml", xml: "xml", css: "css", scss: "scss", swift: "swift", lua: "lua", r: "r", dockerfile: "dockerfile", makefile: "makefile" };
+const codeCache = {};
+function codeLines(path) {
+  if (codeCache[path]) return codeCache[path];
+  const text = W.files[path] || "";
+  const base = path.split("/").pop().toLowerCase();
+  const ext = base.includes(".") ? base.split(".").pop() : base;
+  const lang = LANG_BY_EXT[ext];
+  let html;
+  try { html = (window.hljs && lang && hljs.getLanguage(lang)) ? hljs.highlight(text, { language: lang, ignoreIllegals: true }).value : escapeHtml(text); }
+  catch (e) { html = escapeHtml(text); }
+  // Split highlighted HTML into lines, closing and reopening spans that cross line breaks.
+  const out = []; const open = []; let cur = "";
+  for (const tok of html.match(/<span[^>]*>|<\/span>|\n|[^<\n]+/g) || []) {
+    if (tok === "\n") { out.push(cur + "</span>".repeat(open.length)); cur = open.join(""); }
+    else if (tok.startsWith("<span")) { open.push(tok); cur += tok; }
+    else if (tok === "</span>") { open.pop(); cur += tok; }
+    else cur += tok;
+  }
+  out.push(cur + "</span>".repeat(open.length));
+  if (text.endsWith("\n")) out.pop();
+  return (codeCache[path] = out);
+}
+function ghUrl(path, start, end) {
+  if (!W.repo || !W.repo.url) return null;
+  const base = W.repo.url.replace(/\.git$/, "").replace(/\/$/, "");
+  let u = base + "/blob/" + (W.repo.ref || "HEAD") + "/" + path;
+  if (start) u += "#L" + start + (end && end !== start ? "-L" + end : "");
+  return u;
+}
+
+// ---------------------------------------------------------------- navigation
+let index = Math.min(P.current ?? -1, steps.length - 1);   // -1 = welcome
+let peeking = null;
+let selection = null;   // {path, start, end} chosen by clicking line numbers
+let selAnchor = null;
+const isSkipped = s => depthOf(s.topic) === "skip";
+function go(i, explicit) {
+  index = Math.max(-1, Math.min(steps.length - 1, i));
+  peeking = null; selection = null; selAnchor = null;
+  if (index >= 0 && !P.visited.includes(steps[index].id)) P.visited.push(steps[index].id);
+  P.current = index; save();
+  const name = index < 0 ? "welcome" : "step-" + steps[index].id;
+  if (location.hash.slice(1) !== name) { try { history.replaceState(null, "", "#" + name); } catch (e) { location.hash = name; } }
+  render();
+  $("lesson").parentElement.scrollTop = 0;
+  if (window.matchMedia("(max-width: 760px)").matches && explicit) window.scrollTo({ top: 0 });
+}
+function nextIndex(from, dir) {
+  let i = from + dir;
+  while (i >= 0 && i < steps.length && isSkipped(steps[i])) i += dir;
+  return i;
+}
+function next() { const i = nextIndex(index, 1); if (i < steps.length) go(i, true); }
+function prev() { const i = nextIndex(index, -1); go(i < 0 ? -1 : i, true); }
+
+// ---------------------------------------------------------------- rendering
+const liveText = {};   // stepId -> {deeper: string, qa: [{q, a}]}
+let controllers = {};
+
+function render() {
+  $("repoName").textContent = (W.repo && W.repo.name) || "";
+  $("tourTitle").textContent = W.title;
+  renderMeter(); renderRail(); renderSelect(); renderTuneSummary();
+  const body = $("lesson"); body.replaceChildren();
+  if (index < 0) renderWelcome(body); else renderStep(body, steps[index]);
+  renderSource();
+  if (HOST && index >= 0) {
+    const active = steps.filter(x => !isSkipped(x));
+    post({ type: "step", position: Math.max(1, active.indexOf(steps[index]) + 1), total: active.length, title: steps[index].title });
+  }
+  $("prevBtn").disabled = index < 0;
+  const nxt = nextIndex(index, 1);
+  $("nextBtn").disabled = nxt >= steps.length;
+  $("nextBtn").textContent = index < 0 ? "Start the tour →" : "Next →";
+}
+
+function renderMeter() {
+  const active = steps.filter(s => !isSkipped(s));
+  const pos = index < 0 ? 0 : active.indexOf(steps[index]) + 1;
+  $("meterText").textContent = index < 0 ? active.length + " steps for you" : "Step " + Math.max(pos, 1) + " of " + active.length;
+  $("meterBar").style.width = (active.length ? (pos / active.length) * 100 : 0) + "%";
+}
+function renderRail() {
+  const ol = $("rail"); ol.replaceChildren();
+  ol.append(el("li", { class: index < 0 ? "current" : "" }, el("button", { type: "button", onclick: () => go(-1, true) },
+    el("span", { class: "n" }, "0"), el("span", { class: "t" }, "Before we start"))));
+  steps.forEach((s, i) => {
+    const d = depthOf(s.topic);
+    const cls = [i === index ? "current" : "", P.visited.includes(s.id) ? "visited" : "", d === "skip" ? "skipped" : ""].join(" ");
+    ol.append(el("li", { class: cls }, el("button", { type: "button", onclick: () => go(i, true), "aria-current": i === index ? "step" : null },
+      el("span", { class: "n" }, String(i + 1)), el("span", { class: "t" }, s.title),
+      el("span", { class: "d" }, topicsById[s.topic].label + " · " + DEPTH_LABEL[d]))));
+  });
+}
+function renderSelect() {
+  const sel = $("stepSelect"); sel.replaceChildren(el("option", { value: "-1" }, "0. Before we start"));
+  steps.forEach((s, i) => sel.append(el("option", { value: String(i) }, (i + 1) + ". " + s.title + (isSkipped(s) ? " (skipped)" : ""))));
+  sel.value = String(index);
+}
+function renderTuneSummary() {
+  const counts = { skip: 0, brief: 0, standard: 0, deep: 0 };
+  W.topics.forEach(t => counts[depthOf(t.id)]++);
+  const bits = ["Default: " + DEPTH_LABEL[P.baseline]];
+  if (counts.deep && P.baseline !== "deep") bits.push(counts.deep + " deep");
+  if (counts.skip) bits.push(counts.skip + " skipped");
+  $("tuneSummary").innerHTML = "<b>Tuned for you</b> · " + escapeHtml(bits.join(", "));
+}
+
+function tuneEditor(opts = {}) {
+  const status = el("p", { class: "hint", "aria-live": "polite" });
+  const ta = el("textarea", { id: opts.id || "learnerNote", placeholder: "For example: I don't need basic CRUD explained, but please go into detail about the AI frameworks." });
+  const apply = el("button", { class: "btn primary", type: "button", onclick: async () => { apply.disabled = true; await applyNote(ta.value, status); ta.value = ""; apply.disabled = false; } }, "Tune the tour");
+  ta.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) apply.click(); });
+  const baseSeg = seg(["brief", "standard", "deep"], P.baseline, v => { P.baseline = v; save(); render(); refreshDrawer(); });
+  const rows = W.topics.map(t => {
+    const cur = P.topics[t.id];
+    return el("div", { class: "topic-row" },
+      el("span", { class: "nm" }, t.label),
+      seg(DEPTHS, depthOf(t.id), v => { setTopic(t.id, v, "You set this.", "you"); render(); refreshDrawer(); }),
+      el("span", { class: "ds" }, t.description),
+      cur && cur.why ? el("span", { class: "why" }, cur.why) : null);
+  });
+  return el("div", { class: "tune" },
+    el("div", {}, el("p", { class: "label" }, "Tell the tour about you"),
+      el("p", { class: "hint", style: "margin-bottom:8px" }, "Say what you already know and what you care about. You can do this again at any point."),
+      ta),
+    el("div", { class: "row" }, apply, live ? el("span", { class: "hint" }, liveKind === "claude" ? "Claude reads your note." : liveKind === "local" ? "Claude reads your note (local server)." : liveKind + " reads your note.") : el("span", { class: "hint" }, "Matched by keywords on this device.")),
+    status,
+    el("div", { class: "row", style: "justify-content:space-between" }, el("p", { class: "label", style: "margin:0" }, "Default depth"), baseSeg),
+    el("div", {}, el("p", { class: "label" }, "Depth by topic"), el("div", { class: "topics" }, rows)),
+    P.note ? el("p", { class: "hint" }, "What you've told the tour so far: “" + P.note.replace(/\n/g, " · ") + "”") : null,
+    el("div", { class: "row" }, el("button", { class: "btn", type: "button", onclick: () => { P = Object.assign(freshProfile(), { visited: P.visited, current: P.current }); save(); render(); refreshDrawer(); toast("Reset to the default tour."); } }, "Reset to defaults")));
+}
+function seg(values, current, onPick) {
+  return el("div", { class: "seg", role: "group" }, values.map(v =>
+    el("button", { type: "button", "aria-pressed": v === current ? "true" : "false", onclick: () => onPick(v) }, DEPTH_LABEL[v])));
+}
+
+function renderWelcome(body) {
+  body.append(
+    el("div", { class: "eyebrow" }, el("span", { class: "topic" }, "Before we start")),
+    el("h2", { class: "title" }, W.title),
+    tuneEditor(),
+    el("div", {}, el("p", { class: "label" }, "About this repository"), md(W.summary)));
+}
+
+function renderStep(body, s) {
+  const topic = topicsById[s.topic];
+  let depth = depthOf(s.topic);
+  const skipped = depth === "skip";
+  if (skipped) depth = "brief";
+  const pos = steps.filter(x => !isSkipped(x)).indexOf(s) + 1;
+
+  body.append(el("div", { class: "eyebrow" },
+    el("span", { class: "topic" }, topic.label),
+    el("span", { class: "chip", title: whyOf(s.topic) }, DEPTH_LABEL[depth]),
+    skipped ? el("span", { class: "chip warn" }, "You skipped this topic") : null));
+  body.append(el("h2", { class: "title" }, s.title));
+  if (s.file) body.append(el("button", { class: "file-link", type: "button", onclick: () => { peeking = null; renderSource(true); } }, s.file));
+  body.append(md(s.explanation[depth]));
+
+  // Written-for-you material from live Claude
+  const lt = liveText[s.id] || (liveText[s.id] = { deeper: "", qa: [] });
+  if (lt.deeper) body.append(el("div", { class: "panel written" }, el("p", { class: "label" }, "Deeper, written for you"), md(lt.deeper)));
+
+  // Depth controls
+  const deeperBtn = el("button", { class: "btn", type: "button" }, depth === "deep" ? "Go deeper still" : "Go deeper");
+  const simplerBtn = el("button", { class: "btn", type: "button" }, "Simpler");
+  simplerBtn.disabled = depth === "brief";
+  deeperBtn.disabled = depth === "deep" && !live;
+  simplerBtn.onclick = () => { shift(s.topic, -1, "You asked for less on “" + s.title + "”."); render(); };
+  deeperBtn.onclick = () => {
+    if (depth !== "deep") { shift(s.topic, +1, "You asked for more on “" + s.title + "”."); render(); return; }
+    writeDeeper(s, deeperBtn);
+  };
+  body.append(el("div", { class: "row" }, deeperBtn, simplerBtn,
+    depth === "deep" && !live ? el("span", { class: "hint" }, "This is the deepest prepared version.") : null));
+
+  // Highlights
+  if (s.highlights && s.highlights.length) {
+    body.append(el("div", {}, el("p", { class: "label" }, "In the code"),
+      el("ul", { class: "marks" }, s.highlights.map(h => el("li", {}, el("button", { type: "button", onclick: () => { peeking = null; renderSource(false); scrollToLine(h.start, true); } },
+        el("span", { class: "ln" }, h.start === h.end ? "L" + h.start : "L" + h.start + "–" + h.end), el("span", {}, h.label)))))));
+  }
+
+  // Quick check
+  if (s.check) body.append(checkPanel(s));
+
+  // Feedback
+  const fb = (kind, label) => el("button", { class: "btn", type: "button", onclick: () => feedback(s, kind) }, label);
+  body.append(el("div", { class: "panel feedback" },
+    el("p", { class: "label", style: "margin:0" }, "How was this step?"),
+    el("div", { class: "row" }, fb("basic", "Too basic"), fb("right", "Just right"), fb("much", "Too much")),
+    el("p", { class: "hint" }, "The tour uses this to set the depth for " + topic.label + " on the steps ahead.")));
+
+  // Ask
+  if (live) body.append(askPanel(s, lt));
+
+  // Links
+  if (s.links && s.links.length) {
+    body.append(el("div", {}, el("p", { class: "label" }, "Read more"),
+      el("ul", { class: "links" }, s.links.map(l => {
+        let host = ""; try { host = new URL(l.url).host.replace(/^www\./, ""); } catch (e) {}
+        return el("li", {}, el("a", { href: l.url, target: "_blank", rel: "noopener noreferrer" }, l.title), el("span", { class: "host" }, host));
+      }))));
+  }
+  void pos;
+}
+
+function checkPanel(s) {
+  const panel = el("div", { class: "panel" }, el("p", { class: "label", style: "margin:0" }, "Quick check"), el("p", { class: "check-q" }, s.check.question));
+  const reveal = el("button", { class: "btn", type: "button" }, "Show answer");
+  reveal.onclick = () => {
+    reveal.remove();
+    panel.append(el("p", { class: "check-a" }, s.check.answer),
+      el("div", { class: "row" },
+        el("button", { class: "btn", type: "button", onclick: () => checked(s, true) }, "I had that"),
+        el("button", { class: "btn", type: "button", onclick: () => checked(s, false) }, "I didn't")));
+  };
+  panel.append(el("div", { class: "row" }, reveal));
+  return panel;
+}
+
+function checked(s, ok) {
+  const t = topicsById[s.topic];
+  const sig = signal(s.topic, ok ? "check-ok" : "check-miss");
+  let msg;
+  if (!ok) {
+    msg = shift(s.topic, +1, "You missed the check on “" + s.title + "”.")
+      ? "Noted. " + t.label + " steps will go into more detail now." : "Noted. " + t.label + " is already at full depth; try “Go deeper”.";
+  } else {
+    const streak = sig.slice(-2).every(k => k === "check-ok") && sig.length >= 2;
+    if (streak && shift(s.topic, -1, "You got the last two " + t.label + " checks.")) msg = "Two in a row. " + t.label + " steps will be shorter from here.";
+    else msg = "Nice. Keep going.";
+  }
+  toast(msg); render();
+}
+
+function feedback(s, kind) {
+  const t = topicsById[s.topic];
+  signal(s.topic, kind);
+  let msg = "Thanks. Keeping " + t.label + " at " + DEPTH_LABEL[depthOf(s.topic)].toLowerCase() + ".";
+  if (kind === "basic") {
+    msg = shift(s.topic, -1, "You said “" + s.title + "” was too basic.")
+      ? t.label + " steps will be shorter from here." : t.label + " is already brief. Use “Tune” to skip it.";
+  } else if (kind === "much") {
+    msg = shift(s.topic, -1, "You said “" + s.title + "” was too much.")
+      ? "Got it. " + t.label + " steps will be simpler from here." : t.label + " is already at the simplest version.";
+  }
+  // Gauge overall level: two "too basic" votes on different topics lowers the default depth.
+  if (kind === "basic") {
+    const tooBasic = Object.entries(P.signals).filter(([, v]) => v.includes("basic")).length;
+    if (tooBasic >= 2 && P.baseline !== "brief") {
+      P.baseline = DEPTHS[DEPTHS.indexOf(P.baseline) - 1]; save();
+      msg += " Your default depth is now " + DEPTH_LABEL[P.baseline].toLowerCase() + " too.";
+    }
+  }
+  toast(msg); render();
+}
+
+function stepContext(s) {
+  const parts = [];
+  if (s.file && W.files[s.file] != null) {
+    const lines = W.files[s.file].split("\n");
+    for (const h of s.highlights) {
+      const a = Math.max(1, h.start - 6), b = Math.min(lines.length, h.end + 6);
+      parts.push(`${s.file} lines ${a}-${b} (highlighted ${h.start}-${h.end}: ${h.label}):\n` +
+        lines.slice(a - 1, b).map((l, i) => String(a + i).padStart(4) + "  " + l).join("\n"));
+    }
+  }
+  return parts.join("\n\n").slice(0, 40000);
+}
+function learnerLine() {
+  const t = W.topics.map(x => x.label + ": " + depthOf(x.id)).join(", ");
+  return "Learner profile: default depth " + P.baseline + "; per topic " + t + "." + (P.note ? " In their words: " + P.note.replace(/\n/g, " / ") : "");
+}
+
+async function writeDeeper(s, btn) {
+  const lt = liveText[s.id];
+  const box = el("div", { class: "panel written" }, el("p", { class: "label" }, "Deeper, written for you"), el("p", { class: "hint" }, "Thinking…"));
+  btn.disabled = true;
+  btn.parentElement.after(box);
+  const ctl = new AbortController(); controllers.deeper = ctl;
+  const stop = el("button", { class: "btn", type: "button", onclick: () => ctl.abort() }, "Stop"); box.append(stop);
+  const prompt = [
+    `You are a patient senior engineer teaching someone the repository ${W.repo && W.repo.name || ""}.`,
+    `The current tour step is "${s.title}" (topic: ${topicsById[s.topic].label}). The learner has read this explanation and wants to go deeper:`,
+    '"""', s.explanation.deep, '"""', "",
+    lt.deeper ? "You already added this, so do not repeat it:\n\"\"\"\n" + lt.deeper + "\n\"\"\"\n" : "",
+    "Here is the code for this step:", stepContext(s), "",
+    learnerLine(), "",
+    "Write the next layer down in markdown, 200-350 words: internals, why it was built this way, what would break if it changed,",
+    "and how it connects to the rest of the system. Refer to line numbers when you point at code. Do not restate what they already read.",
+  ].join("\n");
+  try {
+    const text = await live(prompt, { signal: ctl.signal, cache: false, onText: ({ text }) => { box.replaceChildren(el("p", { class: "label" }, "Deeper, written for you"), md(text), stop); } });
+    lt.deeper = (lt.deeper ? lt.deeper + "\n\n" : "") + text;
+    signal(s.topic, "deeper");
+    render();
+  } catch (e) {
+    const msg = liveError(e);
+    if (e && e.text) { lt.deeper = (lt.deeper ? lt.deeper + "\n\n" : "") + e.text; }
+    render(); if (msg) toast(msg);
+  }
+}
+
+function askPanel(s, lt) {
+  const ta = el("textarea", { id: "ask-" + s.id, placeholder: HOST ? "Ask about this step's code, or select lines in the editor to ask about them." : "Ask about this step's code, or click line numbers on the right to ask about specific lines." });
+  const slot = el("div", { class: "sel-slot" }, selChip());
+  const out = el("div", { class: "answer" });
+  for (const qa of lt.qa) out.append(el("p", { class: "q" }, "You asked: " + qa.q), md(qa.a));
+  const btn = el("button", { class: "btn", type: "button" }, "Ask");
+  btn.onclick = async () => {
+    const q = ta.value.trim(); if (!q) return;
+    btn.disabled = true; ta.value = "";
+    const about = selection ? " (" + selLabel() + ")" : "";
+    const holder = el("div", {}, el("p", { class: "q" }, "You asked: " + q + about), el("p", { class: "hint" }, "Thinking…"));
+    out.append(holder);
+    const prompt = [
+      `You are teaching someone the repository ${W.repo && W.repo.name || ""}. They are on the tour step "${s.title}".`,
+      "The explanation they just read:", '"""', s.explanation[depthOf(s.topic) === "skip" ? "brief" : depthOf(s.topic)], '"""',
+      "The code for this step:", stepContext(s), "", selectedCode(), "", learnerLine(), "",
+      ...lt.qa.slice(-3).flatMap(x => ["Earlier question: " + x.q, "Your earlier answer: " + x.a.slice(0, 1500)]),
+      "Their question: " + q, "",
+      "Answer in markdown, as short as the question allows, pitched at their depth. Point at line numbers when useful. If the code shown doesn't answer it, say what you'd need to look at.",
+    ].join("\n");
+    try {
+      const a = await live(prompt, { cache: false, onText: ({ text }) => holder.replaceChildren(el("p", { class: "q" }, "You asked: " + q + about), md(text)) });
+      holder.replaceChildren(el("p", { class: "q" }, "You asked: " + q + about), md(a));
+      lt.qa.push({ q: q + about, a });
+      signal(s.topic, "asked");
+    } catch (e) {
+      const msg = liveError(e); holder.remove(); if (msg) toast(msg);
+    }
+    btn.disabled = false;
+  };
+  ta.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) btn.click(); });
+  return el("div", { class: "panel ask" }, el("p", { class: "label", style: "margin:0" }, "Ask about this code"), out, slot, ta, el("div", { class: "row" }, btn));
+}
+
+// ---------------------------------------------------------------- source panel
+function renderSource(scroll = true) {
+  const scroller = $("codeScroll");
+  const s = index >= 0 ? steps[index] : null;
+  const view = peeking || (s && s.file ? { path: s.file, ranges: s.highlights } : null);
+  if (HOST) {
+    if (scroll) post(view ? { type: "show", path: view.path, ranges: view.ranges, step: s ? s.id : null, peek: !!peeking } : { type: "clear" });
+    return;
+  }
+  $("peekBar").hidden = !peeking;
+  if (peeking) $("peekText").textContent = "Peeking at " + peeking.path + (peeking.ranges[0] ? " · lines " + peeking.ranges[0].start + "–" + peeking.ranges[0].end : "");
+  if (!view) { renderMap(scroller); return; }
+
+  const lines = codeLines(view.path);
+  $("srcPath").textContent = view.path;
+  const meta = $("srcMeta"); meta.replaceChildren(el("span", {}, lines.length + " lines"));
+  const first = view.ranges[0];
+  const gh = ghUrl(view.path, first && first.start, first && first.end);
+  if (gh) meta.append(el("a", { href: gh, target: "_blank", rel: "noopener noreferrer" }, "Open on GitHub"));
+  const ed = editorLink(view.path, first ? first.start : 1);
+  if (ed) meta.append(ed);
+
+  const hl = new Set(); const tagAt = {};
+  for (const r of view.ranges) { for (let i = r.start; i <= r.end; i++) hl.add(i); if (r.label) tagAt[r.start] = r.label; }
+  const tbody = el("tbody");
+  const frag = [];
+  lines.forEach((html, i) => {
+    const n = i + 1;
+    if (tagAt[n]) frag.push(`<tr class="tag-row"><td class="no"></td><td class="src"><span class="tag">${escapeHtml(tagAt[n])}</span></td></tr>`);
+    const cls = [hl.has(n) ? "hl" : "", inSel(view.path, n) ? "sel" : ""].join(" ").trim();
+    frag.push(`<tr id="L${n}"${cls ? ` class="${cls}"` : ""}><td class="no" data-n="${n}" title="Select line ${n} (shift-click to extend)">${n}</td><td class="src">${html || " "}</td></tr>`);
+  });
+  tbody.innerHTML = frag.join("");
+  const table = el("table", { class: "code", role: "presentation" }, tbody);
+  table.addEventListener("click", e => { const td = e.target.closest("td.no[data-n]"); if (td) selectLine(view.path, +td.dataset.n, e.shiftKey); });
+  scroller.replaceChildren(table);
+  renderSelBar();
+  if (scroll && first) scrollToLine(first.start, false);
+  else if (scroll) scroller.scrollTop = 0;
+}
+function scrollToLine(n, flash) {
+  if (HOST) { post({ type: "reveal", line: n, path: peeking ? peeking.path : (steps[index] || {}).file }); return; }
+  const scroller = $("codeScroll");
+  const row = scroller.querySelector("#L" + n);
+  if (!row) return;
+  const target = row.offsetTop - Math.min(120, scroller.clientHeight * 0.18) - 28;
+  scroller.scrollTo({ top: Math.max(0, target), behavior: flash ? "smooth" : "auto" });
+  if (flash) {
+    const s = index >= 0 ? steps[index] : null;
+    const r = (peeking ? peeking.ranges : (s ? s.highlights : [])).find(h => h.start === n);
+    const end = r ? r.end : n;
+    for (let i = n; i <= end; i++) { const tr = scroller.querySelector("#L" + i); if (tr) { tr.classList.remove("flash"); void tr.offsetWidth; tr.classList.add("flash"); } }
+  }
+}
+function peek(path, start, end) {
+  peeking = { path, ranges: start ? [{ start, end: end || start, label: "" }] : [] };
+  renderSource(true);
+  if (window.matchMedia("(max-width: 760px)").matches) $("codeScroll").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function inSel(path, n) { return selection && selection.path === path && n >= selection.start && n <= selection.end; }
+function selectLine(path, n, extend) {
+  if (extend && selAnchor && selAnchor.path === path) selection = { path, start: Math.min(selAnchor.n, n), end: Math.max(selAnchor.n, n) };
+  else if (selection && selection.path === path && selection.start === n && selection.end === n) { selection = null; selAnchor = null; }
+  else { selection = { path, start: n, end: n }; selAnchor = { path, n }; }
+  const scroller = $("codeScroll");
+  for (const tr of scroller.querySelectorAll("tr.sel")) tr.classList.remove("sel");
+  if (selection) for (let i = selection.start; i <= selection.end; i++) { const tr = scroller.querySelector("#L" + i); if (tr) tr.classList.add("sel"); }
+  renderSelBar();
+  const chip = document.querySelector(".ask .sel-slot"); if (chip) chip.replaceChildren(selChip());
+}
+function selLabel() { return selection ? selection.path + " · " + (selection.start === selection.end ? "line " + selection.start : "lines " + selection.start + "–" + selection.end) : ""; }
+function renderSelBar() {
+  const bar = $("selBar");
+  bar.hidden = !selection;
+  if (!selection) return;
+  $("selText").textContent = selLabel();
+  $("selAsk").hidden = !live || index < 0;
+}
+function selChip() {
+  if (!selection) return el("span");
+  return el("span", { class: "sel-chip" }, "About " + selLabel(), el("button", { type: "button", "aria-label": "Clear selected lines", onclick: () => { selection = null; selAnchor = null; renderSource(false); const c = document.querySelector(".ask .sel-slot"); if (c) c.replaceChildren(); } }, "×"));
+}
+function selectedCode() {
+  if (!selection) return "";
+  if (selection.text != null && W.files[selection.path] == null) {
+    return `The learner selected ${selLabel()}:\n` + selection.text.split("\n").map((l, i) => String(selection.start + i).padStart(4) + "  " + l).join("\n");
+  }
+  if (W.files[selection.path] == null) return "";
+  const lines = W.files[selection.path].split("\n");
+  return `The learner selected ${selLabel()}:\n` + lines.slice(selection.start - 1, selection.end).map((l, i) => String(selection.start + i).padStart(4) + "  " + l).join("\n");
+}
+function editorLink(path, line) {
+  const ed = W.editor;
+  if (!ed) return null;
+  const file = ed.root.replace(/\/$/, "") + "/" + path;
+  const label = "Open in " + ({ vscode: "VS Code", cursor: "Cursor", windsurf: "Windsurf", zed: "Zed" }[ed.name] || ed.name);
+  if (ed.url) return el("a", { href: ed.url.replace("{file}", encodeURI(file)).replace("{line}", String(line)) }, label);
+  return el("button", { class: "btn", type: "button", style: "padding:3px 9px;font-size:12px", onclick: () => {
+    fetch(ed.endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ path, line }) })
+      .then(r => toast(r.ok ? "Opened in " + ed.name + "." : "Couldn't open the editor.")).catch(() => toast("Couldn't open the editor."));
+  } }, label);
+}
+
+function coverageBlock() {
+  const src = W.source_files || [];
+  if (!src.length) return null;
+  const linesOf = Object.fromEntries(src.map(f => [f.path, f.lines]));
+  const total = src.reduce((a, f) => a + f.lines, 0) || 1;
+  const shown = new Set(Object.keys(W.files || {}).filter(p => p in linesOf));
+  const seen = new Set(steps.filter(s => P.visited.includes(s.id) && s.file).map(s => s.file).filter(p => p in linesOf));
+  const sum = set => [...set].reduce((a, p) => a + linesOf[p], 0);
+  const pct = n => Math.round((n / total) * 100);
+  const bar = (a, b) => el("span", { class: "cov-bar" }, el("i", { style: "width:" + pct(a) + "%" }), el("b", { style: "width:" + pct(b) + "%" }));
+  // Group files the tour never shows by folder, biggest first.
+  const groups = {};
+  for (const f of src) {
+    if (shown.has(f.path)) continue;
+    const parts = f.path.split("/"); const dir = parts.length > 2 ? parts.slice(0, 2).join("/") : parts.length === 2 ? parts[0] : ".";
+    (groups[dir] = groups[dir] || { files: 0, lines: 0 }); groups[dir].files++; groups[dir].lines += f.lines;
+  }
+  const gaps = Object.entries(groups).sort((a, b) => b[1].lines - a[1].lines).slice(0, 8);
+  const copy = text => { try { navigator.clipboard.writeText(text).then(() => toast("Copied: " + text), () => toast(text)); } catch (e) { toast(text); } };
+  return el("section", { class: "cov" },
+    el("h3", {}, "How much of the repo you've seen"),
+    el("div", { class: "cov-bars" },
+      el("span", {}, "In this tour"), bar(sum(shown), sum(shown)), el("span", {}, shown.size + " of " + src.length + " files · " + pct(sum(shown)) + "% of code"),
+      el("span", {}, "Walked through"), bar(sum(shown), sum(seen)), el("span", {}, seen.size + " files · " + pct(sum(seen)) + "% of code")),
+    gaps.length ? el("p", { class: "hint" }, "Not covered by this tour yet. Generate a focused tour for any of these to fill the gap:") : null,
+    gaps.length ? el("ul", { class: "gaps" }, gaps.map(([dir, g]) => {
+      const cmd = "tourguide generate . --scope " + dir;
+      return el("li", {}, el("code", {}, dir + "/"), el("span", { class: "n" }, g.files + " files · " + g.lines + " lines"),
+        el("button", { class: "btn", type: "button", style: "padding:3px 9px;font-size:12px", title: cmd, onclick: () => copy(cmd) }, "Copy command"));
+    })) : el("p", { class: "hint" }, "This tour shows code from every source file."));
+}
+function renderMap(scroller) {
+  $("srcPath").textContent = "Tour map";
+  $("selBar").hidden = true;
+  $("srcMeta").replaceChildren(el("span", {}, steps.length + " steps across " + W.topics.length + " topics"));
+  const map = el("div", { class: "map" });
+  const cov = coverageBlock(); if (cov) map.append(cov);
+  map.append(el("h3", {}, "What this tour covers, at the depth you chose"));
+  for (const t of W.topics) {
+    const d = depthOf(t.id);
+    const items = steps.map((s, i) => [s, i]).filter(([s]) => s.topic === t.id);
+    map.append(el("section", { class: "map-topic" + (d === "skip" ? " skip" : "") },
+      el("header", {}, el("b", {}, t.label), el("span", { class: "chip", title: whyOf(t.id) }, DEPTH_LABEL[d])),
+      el("ul", {}, items.map(([s, i]) => el("li", {}, el("a", { href: "#step-" + s.id, onclick: e => { e.preventDefault(); go(i, true); } }, (i + 1) + ". " + s.title), el("span", { class: "f" }, s.file || "overview"))))));
+  }
+  scroller.replaceChildren(map);
+}
+
+// ---------------------------------------------------------------- drawer, toast, keys
+function refreshDrawer() { if (!$("tuneDrawer").hidden) $("tuneDrawerBody").replaceChildren(el("h2", { id: "tuneTitle", style: "margin:0 0 14px;font-size:20px" }, "Tune the tour"), tuneEditor({ id: "drawerNote" })); }
+function openDrawer() { $("tuneDrawer").hidden = false; $("scrim").hidden = false; refreshDrawer(); const t = $("drawerNote"); if (t) t.focus(); }
+function closeDrawer() { $("tuneDrawer").hidden = true; $("scrim").hidden = true; $("tuneBtn").focus(); }
+$("tuneBtn").onclick = openDrawer; $("tuneClose").onclick = closeDrawer; $("scrim").onclick = closeDrawer;
+let toastTimer;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 4200); }
+$("prevBtn").onclick = prev; $("nextBtn").onclick = next; $("peekBack").onclick = () => { peeking = null; renderSource(true); };
+$("stepSelect").onchange = e => go(+e.target.value, true);
+$("selClear").onclick = () => { selection = null; selAnchor = null; renderSource(false); const c = document.querySelector(".ask .sel-slot"); if (c) c.replaceChildren(); };
+$("selAsk").onclick = () => { const t = document.querySelector(".ask textarea"); if (t) { t.scrollIntoView({ behavior: "smooth", block: "center" }); t.focus(); } };
+document.addEventListener("keydown", e => {
+  if (e.target.closest("textarea, input, select")) return;
+  if (e.key === "Escape" && !$("tuneDrawer").hidden) return closeDrawer();
+  if (!$("tuneDrawer").hidden) return;
+  if (e.key === "ArrowRight" || e.key === "j") { e.preventDefault(); next(); }
+  if (e.key === "ArrowLeft" || e.key === "k") { e.preventDefault(); prev(); }
+});
+function fromHash() {
+  const h = location.hash.slice(1);
+  if (h === "welcome") return -1;
+  if (h.startsWith("step-")) { const i = steps.findIndex(s => s.id === h.slice(5)); if (i >= 0) return i; }
+  return null;
+}
+window.addEventListener("hashchange", () => { const i = fromHash(); if (i !== null && i !== index) go(i); });
+
+const start = fromHash();
+if (start !== null) index = start;
+render();
+setupLive();
+})();
+</script>
