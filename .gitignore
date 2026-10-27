@@ -8,3 +8,5 @@ extension/out/
 extension/media/
 extension/*.vsix
 examples/**/*.fragment.html
+# Local secrets written by `elevenlabs onboard`
+/.env
