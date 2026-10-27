@@ -1,0 +1,19 @@
+{
+  "title": "How mini works",
+  "summary": "A store and a toy agent. </script><script>alert(1)</script>",
+  "topics": [
+    {"id": "crud", "label": "CRUD store", "description": "Create, read and delete items.", "keywords": ["crud", "database", "store"]},
+    {"id": "ai", "label": "AI agent loop", "description": "The LLM loop.", "keywords": ["ai", "agent", "llm", "ai frameworks"]}
+  ],
+  "steps": [
+    {"id": "overview", "title": "The big picture", "topic": "crud", "file": null, "highlights": [],
+     "explanation": {"brief": "Two files.", "standard": "Two files: a store and an agent.", "deep": "Two modules; [the loop](app/agent.py#L6-L12) reads from [the store](app/store.py)."},
+     "links": [], "check": null},
+    {"id": "store", "title": "The store", "topic": "crud", "file": "app/store.py", "highlights": [{"start": 6, "end": 8, "label": "Create"}, {"start": 15, "end": 16, "label": "Delete"}],
+     "explanation": {"brief": "A dict.", "standard": "A module-level dict holds items.", "deep": "Module state is shared per process."},
+     "links": [{"title": "Python dict", "url": "https://docs.python.org/3/library/stdtypes.html#dict"}], "check": {"question": "Where do items live?", "answer": "In the ITEMS dict."}},
+    {"id": "agent", "title": "The agent loop", "topic": "ai", "file": "app/agent.py", "highlights": [{"start": 6, "end": 12, "label": "Loop until done"}],
+     "explanation": {"brief": "Loops until done.", "standard": "Calls the LLM until it says done.", "deep": "An unbounded ReAct-style loop with no step limit."},
+     "links": [], "check": {"question": "What stops the loop?", "answer": "A reply with done set."}}
+  ]
+}
